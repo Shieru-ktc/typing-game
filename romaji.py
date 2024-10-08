@@ -110,11 +110,3 @@ class TypingQuestion:
                 if pattern.startswith(self.inputting + key):
                     patterns.append((j + 1, pattern))
         return patterns
-
-
-if __name__ == "__main__":
-    q = TypingQuestion("きゃりーばっぐ")
-
-    for k in ("k", "y", "a", "r", "i", "-", "b", "a", "g"):
-        q.press(k)
-    print(tuple(q.romanize_remaining()))
