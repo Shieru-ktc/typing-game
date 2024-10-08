@@ -54,6 +54,7 @@ pygame.display.set_caption("Typing Game")
 font_normal = pygame.font.Font("NotoSansJP-Regular.ttf", 36)
 font_small = pygame.font.Font("NotoSansJP-Regular.ttf", 24)
 font_mono = pygame.font.Font("NotoSansMono-Regular.ttf", 22)
+clock = pygame.time.Clock()
 
 
 class TypingGame:
@@ -157,6 +158,7 @@ class TypingGame:
         return self.correct / (self.correct + self.misses)
 
     def draw(self):
+        clock.tick(30)
         screen.fill((255, 255, 255))
 
     def draw_text(self):
