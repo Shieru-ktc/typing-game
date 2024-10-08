@@ -74,7 +74,13 @@ class TypingGame:
         self.set_question(*questions.pop(0))
 
     def on_key_press(self, key):
+        if key == "":
+            return
         input_char = key
+
+        if not input_char.isalpha() and input_char not in ["-"]:
+            return
+
         if self.start is None:
             self.start = time.time()
         if self.question.press(input_char):
