@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import pygame
 from romaji import TypingQuestion
 from random import shuffle
@@ -6,6 +10,7 @@ import argparse
 from pygame import mixer
 
 from score import PartialRecordSchema, RecordType, send_record
+
 
 parser = argparse.ArgumentParser()
 
