@@ -15,7 +15,8 @@ Python で作ったシンプルなタイピングゲームです。
 1. `venv`を作成（任意）
 2. `requirements.txt`内のパッケージをインストール
 3. `words.txt`を編集（任意）
-4. `python game.py 10`でスタート。ランダムに 10 問出題する。
+4. `.env`を編集し、`SCORE_ENDPOINT`を任意のエンドポイントに設定する。（任意）
+5. `python game.py 10`でスタート。ランダムに 10 問出題します。
 
 ## Resources
 
