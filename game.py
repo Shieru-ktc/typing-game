@@ -1,3 +1,4 @@
+import random
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,6 +30,12 @@ parser.add_argument(
     help="ファイル名",
     required=False,
 )
+parser.add_argument(
+    "--seed",
+    "-s",
+    help="シード値",
+    required=False
+)
 args = parser.parse_args()
 
 questions = []
@@ -39,6 +46,12 @@ with open(args.file or "words.txt") as f:
             continue
         full, read = line.split(":")
         questions.append((full, read.removesuffix("\n")))
+if args.seed:
+    seed = int(args.seed)
+else:
+    seed = int(time.time())
+print(f"乱数シード: {seed}")
+random.seed(seed)
 shuffle(questions)
 mixer.init()
 
