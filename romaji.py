@@ -25,6 +25,7 @@ class TypingQuestion:
                     if substr == "ん":
                         # 次の文字があいうえお、なにぬねの、やゆよ、んの場合はnnまたはxn、そうでない場合はnも追加
                         next_char = question[i + j : i + j + 1]
+                        n_list = ["xn", "nn"]
                         if next_char not in [
                             "あ",
                             "い",
@@ -36,8 +37,8 @@ class TypingQuestion:
                             "よ",
                             "ん",
                         ]:
-                            row.append(("n",))
-                        row.append(("xn", "nn"))
+                            n_list.append("n")
+                        row.append(tuple(n_list))
                     else:
                         row.append(romaji_dict[substr])
                 else:
