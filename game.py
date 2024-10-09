@@ -68,6 +68,7 @@ class TypingGame:
     perfect: bool = True
     cleared: int = 0
     kps_record: list[float] = []
+    romanized_remaining = ""
 
     def __init__(self):
         self.running = True
@@ -169,6 +170,7 @@ class TypingGame:
 
     def draw(self):
         screen.fill((255, 255, 255))
+        self.draw_text()
 
     def draw_text(self):
         kps = (
@@ -186,7 +188,7 @@ class TypingGame:
             self.question.inputted, font_normal, (0, 255, 0), (255, 255, 255)
         )
         remaining_text_surface = render_text(
-            "".join(self.question.romanize_remaining()),
+            self.romanized_remaining,
             font_normal,
             (128, 128, 128),
             (255, 255, 255),
@@ -212,19 +214,21 @@ class TypingGame:
         screen.blit(combined_text_surface, (50, 150))
         screen.blit(status_text_surface, (50, 250))
 
+    def romanize_remainig(self):
+        self.romanized_remaining = "".join(self.question.romanize_remaining())
+
     def run(self):
-        self.draw()
-        self.draw_text()
         while self.running:
+            self.romanize_remainig()
+            self.draw()
+            pygame.display.flip()
             clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
                     self.on_key_press(event.unicode)
-                    self.draw_text()
-            self.draw()
-            pygame.display.flip()
+                    self.romanize_remainig()
         pygame.quit()
 
 
