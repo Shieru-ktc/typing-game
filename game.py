@@ -65,6 +65,11 @@ if args.count != NORMAL_COUNT:
     print(f"警告: カスタム問題数が設定されています。この状態では、{SCORE_CAP * 100}%のスコアが記録されます。")
     print("")
 
+if args.seed:
+    print("")
+    print(f"乱数シードが設定されています。スコア送信は無効化されました。")
+    print("")
+
 name = input("おなまえ: ")
 
 pygame.init()
@@ -166,21 +171,23 @@ class TypingGame:
                 print(f"Thank you for playing!")
                 print(f"スコア: {self.score} (raw: {self.raw_score})")
                 try:
-                    record = send_record(
-                        PartialRecordSchema(
-                            self.score,
-                            name,
-                            RecordType.TYPING,
-                            {
-                                "misses": self.misses,
-                                "cleared": self.cleared,
-                                "correct": self.correct,
-                                "avg_kps": sum(self.kps_record) / len(self.kps_record),
-                                "raw_score": self.raw_score,
-                            },
+                    if args.seed:
+                        print(f"乱数シードが設定されているため、スコアは送信されませんでした。")
+                    else:
+                        record = send_record(
+                            PartialRecordSchema(
+                                self.score,
+                                name,
+                                RecordType.TYPING,
+                                {
+                                    "misses": self.misses,
+                                    "cleared": self.cleared,
+                                    "correct": self.correct,
+                                    "avg_kps": sum(self.kps_record) / len(self.kps_record),
+                                    "raw_score": self.raw_score,
+                                },
+                            )
                         )
-                    )
-
                     print(f"スコアを送信しました！")
                     print(f"あなたの順位は {record['rank']}位 です。")
                 except ValueError as e:
