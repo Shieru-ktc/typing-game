@@ -25,7 +25,7 @@ class TypingQuestion:
                     if substr == "ん":
                         # 次の文字があいうえお、なにぬねの、やゆよ、んの場合はnnまたはxn、そうでない場合はnも追加
                         next_char = question[i + j : i + j + 1]
-                        n_list = ["xn", "nn"]
+                        n_list = ["nn", "xn"]
                         if next_char not in [
                             "あ",
                             "い",
@@ -37,7 +37,7 @@ class TypingQuestion:
                             "よ",
                             "ん",
                         ]:
-                            n_list.append("n")
+                            n_list.insert(0, "n")
                         row.append(tuple(n_list))
                     else:
                         row.append(romaji_dict[substr])
@@ -59,6 +59,7 @@ class TypingQuestion:
     def press(self, key: str):
         if len(key) > 1:
             raise ValueError("key must be a single character")
+        print(self.n_mode, self.inputting, key)
         if self.n_mode:
             self.n_mode = False
             self.i += 1
