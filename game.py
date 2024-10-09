@@ -17,7 +17,7 @@ NORMAL_COUNT = 10
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("count", help="出題する問題数。", default=NORMAL_COUNT, type=int)
+parser.add_argument("count", help="出題する問題数。10以外を指定すると、スコアがキャップされます。", default=NORMAL_COUNT, type=int)
 parser.add_argument(
     "--question",
     "-q",
@@ -27,13 +27,13 @@ parser.add_argument(
 parser.add_argument(
     "--file",
     "-f",
-    help="ファイル名",
+    help="ワードリストを読み取るファイル。",
     required=False,
 )
 parser.add_argument(
     "--seed",
     "-s",
-    help="シード値",
+    help="問題のシャッフルに用いる乱数シード。スコア送信が無効化されます。",
     required=False
 )
 args = parser.parse_args()
