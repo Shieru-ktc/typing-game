@@ -176,34 +176,26 @@ class TypingGame:
             if self.start and len(self.question.inputted) >= 2
             else 0
         )
-        full_text_surface = font_normal.render(self.full_text, True, (0, 0, 0))
-        reading_text_surface = font_small.render(self.reading_text, True, (0, 0, 0))
-        inputted_text_surface = font_normal.render(
-            self.question.inputted, True, (0, 0, 0)
-        )
-        remaining_text_surface = font_normal.render(
-            "".join(self.question.romanize_remaining()), True, (0, 0, 0)
-        )
-        status_text_surface = font_mono.render(
-            f"KPS: {round(kps, 2):05.2f} Score: {self.score} Combo: {self.combo}/{self.max_combo} Misses: {self.misses} ({self.accuracy() * 100:.2f}% accuracy)",
-            True,
-            (0, 0, 0),
-        )
-        screen.blit(reading_text_surface, (50, 100))
-        screen.blit(full_text_surface, (50, 50))
 
-        inputted_text_surface = font_normal.render(
-            self.question.inputted,
-            True,
-            (0, 255, 0),
-            (255, 255, 255),
+        def render_text(text, font, color=(0, 0, 0), bg_color=None):
+            return font.render(text, True, color, bg_color)
+
+        full_text_surface = render_text(self.full_text, font_normal)
+        reading_text_surface = render_text(self.reading_text, font_small)
+        inputted_text_surface = render_text(
+            self.question.inputted, font_normal, (0, 255, 0), (255, 255, 255)
         )
-        remaining_text_surface = font_normal.render(
+        remaining_text_surface = render_text(
             "".join(self.question.romanize_remaining()),
-            True,
+            font_normal,
             (128, 128, 128),
             (255, 255, 255),
         )
+        status_text_surface = render_text(
+            f"KPS: {round(kps, 2):05.2f} Score: {self.score} Combo: {self.combo}/{self.max_combo} Misses: {self.misses} ({self.accuracy() * 100:.2f}% accuracy)",
+            font_mono,
+        )
+
         combined_text_surface = pygame.Surface(
             (
                 inputted_text_surface.get_width() + remaining_text_surface.get_width(),
@@ -214,6 +206,9 @@ class TypingGame:
         combined_text_surface.blit(
             remaining_text_surface, (inputted_text_surface.get_width(), 0)
         )
+
+        screen.blit(reading_text_surface, (50, 100))
+        screen.blit(full_text_surface, (50, 50))
         screen.blit(combined_text_surface, (50, 150))
         screen.blit(status_text_surface, (50, 250))
 
