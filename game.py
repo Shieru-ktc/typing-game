@@ -62,7 +62,7 @@ def play_audio(filename: str):
 
 if args.count != NORMAL_COUNT:
     print("")
-    print(f"警告: カスタム問題数が設定されています。この状態では、{SCORE_CAP * 100}%のスコアが記録されます。")
+    print(f"警告: カスタム問題数が設定されています。スコアは{SCORE_CAP * 100}%にキャップされます。")
     print("")
 
 if args.seed:
@@ -104,7 +104,7 @@ class TypingGame:
     def __init__(self):
         self.running = True
         self.question = None
-        self.set_question(*questions.pop(0))
+        self.set_question(*questions.pop(0) if not args.question else args.question.split(":"))
     
     @property
     def score(self):
