@@ -79,7 +79,11 @@ class TypingGame:
             return
         input_char = key
 
-        if not input_char.isalpha() and input_char not in ["-"]:
+        if (
+            not input_char.isalpha()
+            and not input_char.isdigit()
+            and input_char not in ["-"]
+        ):
             return
 
         if self.start is None:
@@ -115,28 +119,34 @@ class TypingGame:
                 self.score += round(bonus)
             self.cleared += 1
             if args.count == self.cleared:
-                record = send_record(
-                    PartialRecordSchema(
-                        self.score,
-                        name,
-                        RecordType.TYPING,
-                        {
-                            "misses": self.misses,
-                            "cleared": self.cleared,
-                            "correct": self.correct,
-                            "avg_kps": sum(self.kps_record) / len(self.kps_record),
-                        },
-                    )
-                )
-
                 self.running = False
                 pygame.quit()
                 print("")
                 print(f"Thank you for playing!")
                 print(f"スコア: {self.score}")
-                print(f"順位: {record['rank']}位")
-                input(f"Enterキーを押して終了します: ")
+                try:
+                    record = send_record(
+                        PartialRecordSchema(
+                            self.score,
+                            name,
+                            RecordType.TYPING,
+                            {
+                                "misses": self.misses,
+                                "cleared": self.cleared,
+                                "correct": self.correct,
+                                "avg_kps": sum(self.kps_record) / len(self.kps_record),
+                            },
+                        )
+                    )
 
+                    print(f"スコアを送信しました！")
+                    print(f"あなたの順位は: {record['rank']}位 です。")
+                except ValueError as e:
+                    print(f"スコアサーバーが設定されていません: {e}")
+                    print(f"環境変数 SCORE_ENDPOINT を設定してください。")
+                except Exception as e:
+                    print(f"スコアの送信に失敗しました。エラー: {e}")
+                input(f"Enterキーを押して終了します: ")
                 exit()
             else:
                 self.new_question()
@@ -158,7 +168,6 @@ class TypingGame:
         return self.correct / (self.correct + self.misses)
 
     def draw(self):
-        clock.tick(30)
         screen.fill((255, 255, 255))
 
     def draw_text(self):
@@ -207,12 +216,12 @@ class TypingGame:
         )
         screen.blit(combined_text_surface, (50, 150))
         screen.blit(status_text_surface, (50, 250))
-        pygame.display.flip()
 
     def run(self):
         self.draw()
         self.draw_text()
         while self.running:
+            clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -220,6 +229,7 @@ class TypingGame:
                     self.on_key_press(event.unicode)
                     self.draw_text()
             self.draw()
+            pygame.display.flip()
         pygame.quit()
 
 
