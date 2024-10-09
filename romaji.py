@@ -59,7 +59,6 @@ class TypingQuestion:
     def press(self, key: str):
         if len(key) > 1:
             raise ValueError("key must be a single character")
-        print(self.n_mode, self.inputting, key)
         if self.n_mode:
             self.n_mode = False
             self.i += 1
