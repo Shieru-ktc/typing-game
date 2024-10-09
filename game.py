@@ -11,10 +11,12 @@ from pygame import mixer
 
 from score import PartialRecordSchema, RecordType, send_record
 
+SCORE_CAP = 0.8
+NORMAL_COUNT = 10
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("count", help="出題する問題数。", default=10, type=int)
+parser.add_argument("count", help="出題する問題数。", default=NORMAL_COUNT, type=int)
 parser.add_argument(
     "--question",
     "-q",
@@ -45,6 +47,10 @@ def play_audio(filename: str):
     mixer.music.load(filename)
     mixer.music.play()
 
+if args.count != NORMAL_COUNT:
+    print("")
+    print(f"警告: カスタム問題数が設定されています。この状態では、{SCORE_CAP * 100}%のスコアが記録されます。")
+    print("")
 
 name = input("おなまえ: ")
 
@@ -65,7 +71,7 @@ def get_friendly_time(seconds: float) -> str:
 
 class TypingGame:
     question: TypingQuestion
-    score: int = 0
+    raw_score: int = 0
     combo: int = 0
     max_combo: int = 0
     correct: int = 0
@@ -81,6 +87,17 @@ class TypingGame:
         self.running = True
         self.question = None
         self.set_question(*questions.pop(0))
+    
+    @property
+    def score(self):
+        # 10問で正規化
+        normalized_score = self.raw_score / args.count * NORMAL_COUNT
+        
+        # 10問以外の場合にペナルティ
+        if args.count != NORMAL_COUNT:
+            normalized_score *= SCORE_CAP
+        
+        return round(normalized_score)
 
     def on_key_press(self, key):
         if key == "":
@@ -101,7 +118,7 @@ class TypingGame:
             self.start = time.time()
         if self.question.press(input_char):
             self.combo += 1
-            self.score += 2 * max(1, min(self.combo, 50))
+            self.raw_score += 2 * max(1, min(self.combo, 50))
             self.correct += 1
             play_audio("key.mp3")
         else:
@@ -127,14 +144,14 @@ class TypingGame:
                 if self.perfect:
                     bonus *= 1.2
                     bonus += 300
-                self.score += round(bonus)
+                self.raw_score += round(bonus)
             self.cleared += 1
             if args.count == self.cleared:
                 self.running = False
                 pygame.quit()
                 print("")
                 print(f"Thank you for playing!")
-                print(f"スコア: {self.score}")
+                print(f"スコア: {self.score} (raw: {self.raw_score})")
                 try:
                     record = send_record(
                         PartialRecordSchema(
@@ -146,6 +163,7 @@ class TypingGame:
                                 "cleared": self.cleared,
                                 "correct": self.correct,
                                 "avg_kps": sum(self.kps_record) / len(self.kps_record),
+                                "raw_score": self.raw_score,
                             },
                         )
                     )
