@@ -169,7 +169,7 @@ class TypingGame:
                     )
 
                     print(f"スコアを送信しました！")
-                    print(f"あなたの順位は: {record['rank']}位 です。")
+                    print(f"あなたの順位は {record['rank']}位 です。")
                 except ValueError as e:
                     print(f"スコアサーバーが設定されていません: {e}")
                     print(f"環境変数 SCORE_ENDPOINT を設定してください。")
@@ -227,7 +227,7 @@ class TypingGame:
             (255, 255, 255),
         )
         inputted_text_surface = render_text(
-            self.question.completed_chars, font_small, (0, 255, 0), (255, 255, 255)
+            self.question.completed_chars, font_small, (0, 0, 100), (255, 255, 255)
         )
         remaining_text_surface = render_text(
             self.question.remaining_chars,
