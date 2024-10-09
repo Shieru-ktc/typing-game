@@ -36,6 +36,7 @@ class TypingQuestion:
                             "ゆ",
                             "よ",
                             "ん",
+                            "",
                         ]:
                             n_list.insert(0, "n")
                         row.append(tuple(n_list))
