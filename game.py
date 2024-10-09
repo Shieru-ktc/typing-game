@@ -73,7 +73,7 @@ if args.seed:
 name = input("おなまえ: ")
 
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((1280, 640))
 pygame.display.set_caption("Typing Game")
 font_normal = pygame.font.Font("NotoSansJP-Regular.ttf", 36)
 font_small = pygame.font.Font("NotoSansJP-Regular.ttf", 24)
@@ -188,8 +188,8 @@ class TypingGame:
                                 },
                             )
                         )
-                    print(f"スコアを送信しました！")
-                    print(f"あなたの順位は {record['rank']}位 です。")
+                        print(f"スコアを送信しました！")
+                        print(f"あなたの順位は {record['rank']}位 です。")
                 except ValueError as e:
                     print(f"スコアサーバーが設定されていません: {e}")
                     print(f"環境変数 SCORE_ENDPOINT を設定してください。")
