@@ -62,8 +62,8 @@ class TypingQuestion:
             self.n_mode = False
             self.i += 1
             self.inputting = ""
-            self.inputted += "n"
             if key == "n":
+                self.inputted += "n"
                 return True
         for j, tokens in enumerate(self.table[self.i]):
             for token in tokens:

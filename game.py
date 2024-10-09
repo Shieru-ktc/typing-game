@@ -57,6 +57,12 @@ font_mono = pygame.font.Font("NotoSansMono-Regular.ttf", 22)
 clock = pygame.time.Clock()
 
 
+def get_friendly_time(seconds: float) -> str:
+    minutes = int(seconds // 60)
+    seconds = int(seconds % 60)
+    return f"{minutes:02}:{seconds:02}"
+
+
 class TypingGame:
     question: TypingQuestion
     score: int = 0
@@ -65,6 +71,7 @@ class TypingGame:
     correct: int = 0
     misses: int = 0
     start: float | None = None
+    game_start: float | None = None
     perfect: bool = True
     cleared: int = 0
     kps_record: list[float] = []
@@ -86,6 +93,9 @@ class TypingGame:
             and input_char not in ["-"]
         ):
             return
+
+        if self.game_start is None:
+            self.game_start = time.time()
 
         if self.start is None:
             self.start = time.time()
@@ -182,20 +192,46 @@ class TypingGame:
         def render_text(text, font, color=(0, 0, 0), bg_color=None):
             return font.render(text, True, color, bg_color)
 
+        question_status = render_text(
+            f"{get_friendly_time(time.time() - self.game_start) if self.game_start else "00:00"}      {self.cleared + 1}/{args.count}",
+            font_small,
+            (100,100,100),
+            (255, 255, 255),
+        )
         full_text_surface = render_text(self.full_text, font_normal)
-        reading_text_surface = render_text(self.reading_text, font_small)
-        inputted_text_surface = render_text(
+        inputted_romaji_surface = render_text(
             self.question.inputted, font_normal, (0, 255, 0), (255, 255, 255)
         )
-        remaining_text_surface = render_text(
+        remaining_romaji_surface = render_text(
             self.romanized_remaining,
             font_normal,
+            (128, 128, 128),
+            (255, 255, 255),
+        )
+        inputted_text_surface = render_text(
+            self.question.completed_chars, font_small, (0, 255, 0), (255, 255, 255)
+        )
+        remaining_text_surface = render_text(
+            self.question.remaining_chars,
+            font_small,
             (128, 128, 128),
             (255, 255, 255),
         )
         status_text_surface = render_text(
             f"KPS: {round(kps, 2):05.2f} Score: {self.score} Combo: {self.combo}/{self.max_combo} Misses: {self.misses} ({self.accuracy() * 100:.2f}% accuracy)",
             font_mono,
+        )
+
+        combined_romaji_surface = pygame.Surface(
+            (
+                inputted_romaji_surface.get_width()
+                + remaining_romaji_surface.get_width(),
+                inputted_romaji_surface.get_height(),
+            )
+        )
+        combined_romaji_surface.blit(inputted_romaji_surface, (0, 0))
+        combined_romaji_surface.blit(
+            remaining_romaji_surface, (inputted_romaji_surface.get_width(), 0)
         )
 
         combined_text_surface = pygame.Surface(
@@ -209,10 +245,11 @@ class TypingGame:
             remaining_text_surface, (inputted_text_surface.get_width(), 0)
         )
 
-        screen.blit(reading_text_surface, (50, 100))
-        screen.blit(full_text_surface, (50, 50))
-        screen.blit(combined_text_surface, (50, 150))
-        screen.blit(status_text_surface, (50, 250))
+        screen.blit(question_status, (50, 20))
+        screen.blit(combined_text_surface, (50, 120))
+        screen.blit(full_text_surface, (50, 70))
+        screen.blit(combined_romaji_surface, (50, 170))
+        screen.blit(status_text_surface, (50, 270))
 
     def romanize_remainig(self):
         self.romanized_remaining = "".join(self.question.romanize_remaining())
