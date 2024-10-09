@@ -7,16 +7,14 @@ with open("romaji.json", "r") as f:
 
 
 class TypingQuestion:
-    table: list[list[list[str]]]  # 文字列の入力パターン
-    i = 0  # 現在のインデックス
+    table: list[list[list[str]]]
+    i = 0
     inputting = ""
     inputted = ""
     question = ""
     n_mode = False
 
     def __init__(self, question: str):
-        # 問題分に対して、i文字目からj文字分切り出した文字列の入力パターンを、i行j列の表に格納
-        # jは最大4
         self.question = question
         self.table = []
         for i in range(len(question)):
