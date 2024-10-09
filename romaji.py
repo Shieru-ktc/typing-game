@@ -66,10 +66,8 @@ class TypingQuestion:
         if len(key) > 1:
             raise ValueError("key must be a single character")
         if self.n_mode:
-            self.n_mode = False
-            self.i += 1
-            self.inputting = ""
             if key == "n":
+                self.n_mode = False
                 self.inputted += "n"
                 return True
         for j, tokens in enumerate(self.table[self.i]):
@@ -78,11 +76,12 @@ class TypingQuestion:
                     self.inputting += key
                     self.inputted += key
                     if token == self.inputting:
+                        self.i += j + 1
+                        self.inputting = ""
+                        self.n_mode = False
                         if token == "n":
                             self.n_mode = True
                             return True
-                        self.i += j + 1
-                        self.inputting = ""
                     return True
         return False
 
