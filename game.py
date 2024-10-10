@@ -53,7 +53,14 @@ else:
 print(f"乱数シード: {seed}")
 random.seed(seed)
 shuffle(questions)
-mixer.init()
+mixer.init(buffer=2048)
+
+KEY_CH = mixer.Channel(0)
+KEY_SOUND = mixer.Sound("key.mp3")
+MISS_CH = mixer.Channel(1)
+MISS_SOUND = mixer.Sound("miss.mp3")
+NEXT_CH = mixer.Channel(2)
+NEXT_SOUND = mixer.SoundType("next.mp3")
 
 
 def play_audio(filename: str):
@@ -138,12 +145,12 @@ class TypingGame:
             self.combo += 1
             self.raw_score += 2 * max(1, min(self.combo, 50))
             self.correct += 1
-            play_audio("key.mp3")
+            KEY_CH.play(KEY_SOUND)
         else:
             self.misses += 1
             self.combo = 0
             self.perfect = False
-            play_audio("miss.mp3")
+            MISS_CH.play(MISS_SOUND)
         if self.combo > self.max_combo:
             self.max_combo = self.combo
         self.update_question()
@@ -155,7 +162,7 @@ class TypingGame:
             else 0
         )
         if self.question.is_completed:
-            play_audio("next.mp3")
+            NEXT_CH.play(NEXT_SOUND)
             self.kps_record.append(kps)
             if 1 < kps:
                 bonus = kps * 500
