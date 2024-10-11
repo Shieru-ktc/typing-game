@@ -17,7 +17,12 @@ NORMAL_COUNT = 10
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("count", help="出題する問題数。10以外を指定すると、スコアがキャップされます。", default=NORMAL_COUNT, type=int)
+parser.add_argument(
+    "count",
+    help="出題する問題数。10以外を指定すると、スコアがキャップされます。",
+    default=NORMAL_COUNT,
+    type=int,
+)
 parser.add_argument(
     "--question",
     "-q",
@@ -34,7 +39,7 @@ parser.add_argument(
     "--seed",
     "-s",
     help="問題のシャッフルに用いる乱数シード。スコア送信が無効化されます。",
-    required=False
+    required=False,
 )
 args = parser.parse_args()
 
@@ -67,9 +72,12 @@ def play_audio(filename: str):
     mixer.music.load(filename)
     mixer.music.play()
 
+
 if args.count != NORMAL_COUNT:
     print("")
-    print(f"警告: カスタム問題数が設定されています。スコアは{SCORE_CAP * 100}%にキャップされます。")
+    print(
+        f"警告: カスタム問題数が設定されています。スコアは{SCORE_CAP * 100}%にキャップされます。"
+    )
     print("")
 
 if args.seed:
@@ -111,17 +119,19 @@ class TypingGame:
     def __init__(self):
         self.running = True
         self.question = None
-        self.set_question(*questions.pop(0) if not args.question else args.question.split(":"))
-    
+        self.set_question(
+            *questions.pop(0) if not args.question else args.question.split(":")
+        )
+
     @property
     def score(self):
         # 10問で正規化
         normalized_score = self.raw_score / args.count * NORMAL_COUNT
-        
+
         # 10問以外の場合にペナルティ
         if args.count != NORMAL_COUNT:
             normalized_score *= SCORE_CAP
-        
+
         return round(normalized_score)
 
     def on_key_press(self, key):
@@ -132,7 +142,7 @@ class TypingGame:
         if (
             not input_char.isalpha()
             and not input_char.isdigit()
-            and input_char not in ["-"]
+            and input_char not in ["-", " ", ",", "."]
         ):
             return
 
@@ -179,7 +189,9 @@ class TypingGame:
                 print(f"スコア: {self.score} (raw: {self.raw_score})")
                 try:
                     if args.seed:
-                        print(f"乱数シードが設定されているため、スコアは送信されませんでした。")
+                        print(
+                            f"乱数シードが設定されているため、スコアは送信されませんでした。"
+                        )
                     else:
                         record = send_record(
                             PartialRecordSchema(
@@ -190,7 +202,8 @@ class TypingGame:
                                     "misses": self.misses,
                                     "cleared": self.cleared,
                                     "correct": self.correct,
-                                    "avg_kps": sum(self.kps_record) / len(self.kps_record),
+                                    "avg_kps": sum(self.kps_record)
+                                    / len(self.kps_record),
                                     "raw_score": self.raw_score,
                                 },
                             )
@@ -240,7 +253,7 @@ class TypingGame:
         question_status = render_text(
             f"{get_friendly_time(time.time() - self.game_start) if self.game_start else "00:00"}      {self.cleared + 1}/{args.count}",
             font_small,
-            (100,100,100),
+            (100, 100, 100),
             (255, 255, 255),
         )
         full_text_surface = render_text(self.full_text, font_normal)
