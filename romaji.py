@@ -2,7 +2,7 @@ import json
 
 romaji_dict = {}
 
-with open("romaji.json", "r") as f:
+with open("romaji.json", "r", encoding="UTF-8") as f:
     romaji_dict = json.load(f)
 
 

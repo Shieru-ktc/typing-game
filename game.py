@@ -45,7 +45,7 @@ args = parser.parse_args()
 
 questions = []
 
-with open(args.file or "words.txt") as f:
+with open(args.file or "words.txt", encoding="UTF-8") as f:
     for line in f.readlines():
         if line.startswith("#"):
             continue
