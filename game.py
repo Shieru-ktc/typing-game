@@ -65,7 +65,7 @@ KEY_SOUND = mixer.Sound("key.mp3")
 MISS_CH = mixer.Channel(1)
 MISS_SOUND = mixer.Sound("miss.mp3")
 NEXT_CH = mixer.Channel(2)
-NEXT_SOUND = mixer.SoundType("next.mp3")
+NEXT_SOUND = mixer.Sound("next.mp3")
 
 
 def play_audio(filename: str):
