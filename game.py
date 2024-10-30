@@ -317,7 +317,7 @@ class TypingGame:
             self.romanize_remainig()
             self.draw()
             pygame.display.flip()
-            clock.tick(30)
+            clock.tick(144)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
